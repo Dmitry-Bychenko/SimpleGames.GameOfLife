@@ -1,6 +1,8 @@
 # Game Of Life
 [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 
+[![NuGet version (Game of Life)](https://img.shields.io/nuget/v/SimpleGames.Sudoku.svg?style=flat-square)](https://www.nuget.org/packages/SimpleGames.GameOfLife/)
+
 ## Demo:
 
 ```c#
