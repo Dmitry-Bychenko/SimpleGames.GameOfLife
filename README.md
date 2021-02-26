@@ -4,6 +4,7 @@
 ## Demo:
 
 ```c#
+      // Glider hits tub
       GameOfLifeGeneration game = GameOfLifeGeneration.Parse(
         @"...........
           ....O......
@@ -15,8 +16,10 @@
           .O.........
         ");
 
+      // Move 100 generations ahead
       game.Next(100);
       
+      // Print the result
       Console.Write(game);
 ```
 
