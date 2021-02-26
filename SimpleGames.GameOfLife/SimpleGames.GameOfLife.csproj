@@ -10,6 +10,14 @@
     <Description>Conway's Game of Life</Description>
     <Copyright>Copyright (c) 2021 by Dmitry Bychenko</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>GameOfLife.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Images\GameOfLife.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
