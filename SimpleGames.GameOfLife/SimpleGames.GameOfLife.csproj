@@ -11,6 +11,7 @@
     <Copyright>Copyright (c) 2021 by Dmitry Bychenko</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>GameOfLife.png</PackageIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
