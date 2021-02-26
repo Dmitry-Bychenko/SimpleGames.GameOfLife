@@ -13,6 +13,8 @@
     <PackageIcon>GameOfLife.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/Dmitry-Bychenko/SimpleGames.GameOfLife</RepositoryUrl>
+    <Version>1.0.0.1</Version>
+    <PackageReleaseNotes>Repository URL provided</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
