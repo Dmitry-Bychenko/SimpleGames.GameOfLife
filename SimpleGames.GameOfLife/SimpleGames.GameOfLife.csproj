@@ -12,6 +12,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>GameOfLife.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/Dmitry-Bychenko/SimpleGames.GameOfLife</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
