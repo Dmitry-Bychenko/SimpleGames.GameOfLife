@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>SimpleGames.GameOfLife.snk.pfx</AssemblyOriginatorKeyFile>
+    <Authors>Dmitry Bychenko</Authors>
+    <Company>Dmitry Bychenko</Company>
+    <Product>Game Of Life</Product>
+    <Description>Conway's Game of Life</Description>
+    <Copyright>Copyright (c) 2021 by Dmitry Bychenko</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+</Project>
