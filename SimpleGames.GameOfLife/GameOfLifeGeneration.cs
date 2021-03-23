@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[assembly:CLSCompliant(true)]
+[assembly: CLSCompliant(true)]
 
 namespace SimpleGames.GameOfLife {
 
@@ -95,7 +95,7 @@ namespace SimpleGames.GameOfLife {
     /// <summary>
     /// From point 
     /// </summary>
-    public static implicit operator GameOfLifeCell((int row, int column) point) => new GameOfLifeCell(point);
+    public static implicit operator GameOfLifeCell((int row, int column) point) => new (point);
 
     /// <summary>
     /// Equal
@@ -169,7 +169,7 @@ namespace SimpleGames.GameOfLife {
   public sealed class GameOfLifeGeneration : IEquatable<GameOfLifeGeneration>, ICloneable, ISerializable {
     #region Private Data
 
-    private HashSet<GameOfLifeCell> m_Live = new HashSet<GameOfLifeCell>();
+    private HashSet<GameOfLifeCell> m_Live = new();
 
     #endregion Private Data
 
@@ -205,7 +205,7 @@ namespace SimpleGames.GameOfLife {
 
     private void CoreNextGeneration() {
       unchecked {
-        HashSet<GameOfLifeCell> agenda = new HashSet<GameOfLifeCell>();
+        HashSet<GameOfLifeCell> agenda = new();
 
         foreach (GameOfLifeCell cell in m_Live) {
           agenda.Add(new GameOfLifeCell(cell.Row + 1, cell.Column + 1));
@@ -221,7 +221,7 @@ namespace SimpleGames.GameOfLife {
           agenda.Add(new GameOfLifeCell(cell.Row - 1, cell.Column - 1));
         }
 
-        HashSet<GameOfLifeCell> next = new HashSet<GameOfLifeCell>();
+        HashSet<GameOfLifeCell> next = new();
 
         foreach (GameOfLifeCell cell in agenda) {
           int count = NeighboursCount(cell);
@@ -284,7 +284,7 @@ namespace SimpleGames.GameOfLife {
     /// Clone
     /// </summary>
     public GameOfLifeGeneration Clone() {
-      GameOfLifeGeneration result = new GameOfLifeGeneration();
+      GameOfLifeGeneration result = new();
 
       foreach (GameOfLifeCell cell in m_Live)
         result.m_Live.Add(cell);
@@ -299,9 +299,9 @@ namespace SimpleGames.GameOfLife {
       if (lines is null)
         throw new ArgumentNullException(nameof(lines));
 
-      GameOfLifeGeneration result = new GameOfLifeGeneration();
+      GameOfLifeGeneration result = new();
 
-      Regex regex = new Regex(@"(?<row>-?[0-9]+)[0-9\-]+(?<col>-?[0-9]+)");
+      Regex regex = new(@"(?<row>-?[0-9]+)[0-9\-]+(?<col>-?[0-9]+)");
 
       foreach (string line in lines) {
         if (string.IsNullOrWhiteSpace(line))
@@ -443,7 +443,7 @@ namespace SimpleGames.GameOfLife {
     }
 
     /// <summary>
-    /// Lines Range
+    /// Lines Range (entire board)
     /// </summary>
     public (int from, int to) LinesRange {
       get {
@@ -473,7 +473,7 @@ namespace SimpleGames.GameOfLife {
     }
 
     /// <summary>
-    /// Columns Range
+    /// Columns Range (entire board)
     /// </summary>
     public (int from, int to) ColumnsRange {
       get {
@@ -503,6 +503,50 @@ namespace SimpleGames.GameOfLife {
     }
 
     /// <summary>
+    /// Enumerate rectangles with live cells 
+    /// </summary>
+    public IEnumerable<(int fromRow, int toRow, int fromColumn, int toColumn)> Windows() {
+      HashSet<(int y, int x)> agenda = new (m_Live.Select(c => (c.Row, c.Column)));
+
+      while (agenda.Count > 0) {
+        (int y, int x) point = agenda.First();
+        
+        int minX = point.x;
+        int maxX = minX;
+        int minY = point.y;
+        int maxY = minY;
+
+        HashSet<(int y, int x)> completed = new ();
+        Queue<(int y, int x)> queue = new ();
+
+        queue.Enqueue(point);
+
+        while (queue.Count > 0) {
+          var p = queue.Dequeue();
+
+          if (!completed.Add(p))
+            continue;
+
+          if (agenda.Contains(p)) {
+            agenda.Remove(p);
+
+            minX = Math.Min(minX, p.x);
+            maxX = Math.Max(maxX, p.x);
+            minY = Math.Min(minY, p.y);
+            maxY = Math.Max(maxY, p.y);
+
+            for (int x = -2; x <= 2; ++x)
+              for (int y = -2; y <= 2; ++y)
+                if (!completed.Contains((p.y + y, p.x + x)))
+                  queue.Enqueue((p.y + y, p.x + x));
+          }
+        }
+
+        yield return (minY, maxY + 1, minX, maxX + 1);
+      }
+    }
+
+    /// <summary>
     /// To Csv
     /// </summary>
     public IEnumerable<string> ToCsv() {
@@ -523,7 +567,7 @@ namespace SimpleGames.GameOfLife {
     /// To String (for given range)
     /// </summary>
     public string ToString((int from, int to) rows, (int from, int to) columns, char live = 'O', char dead = '.') {
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new ();
 
       for (int r = rows.from; r < rows.to; ++r) {
         if (sb.Length > 0)
@@ -535,6 +579,12 @@ namespace SimpleGames.GameOfLife {
 
       return sb.ToString();
     }
+
+    /// <summary>
+    /// To String (for given window)
+    /// </summary>
+    public string ToString((int fromRow, int toRow, int fromColumn, int toColumn) window, char live = 'O', char dead = '.') =>
+      ToString((window.fromRow, window.toRow), (window.fromColumn, window.toColumn), live, dead);
 
     /// <summary>
     /// To String
@@ -552,6 +602,13 @@ namespace SimpleGames.GameOfLife {
       return ToString(lines, columns);
     }
 
+    /// <summary>
+    /// Windowed report 
+    /// </summary>
+    public string ToReport() =>
+      string.Join(Environment.NewLine + Environment.NewLine, Windows()
+        .Select(window => $"{window.fromColumn}:{window.fromRow} / {window.toColumn - 1}:{window.toRow - 1}\r\n\r\n{ToString(window)}"));
+      
     #endregion Public
 
     #region IEquatable<GameOfLife>
