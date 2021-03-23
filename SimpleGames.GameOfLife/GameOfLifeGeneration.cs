@@ -95,7 +95,7 @@ namespace SimpleGames.GameOfLife {
     /// <summary>
     /// From point 
     /// </summary>
-    public static implicit operator GameOfLifeCell((int row, int column) point) => new (point);
+    public static implicit operator GameOfLifeCell((int row, int column) point) => new(point);
 
     /// <summary>
     /// Equal
@@ -506,18 +506,18 @@ namespace SimpleGames.GameOfLife {
     /// Enumerate rectangles with live cells 
     /// </summary>
     public IEnumerable<(int fromRow, int toRow, int fromColumn, int toColumn)> Windows() {
-      HashSet<(int y, int x)> agenda = new (m_Live.Select(c => (c.Row, c.Column)));
+      HashSet<(int y, int x)> agenda = new(m_Live.Select(c => (c.Row, c.Column)));
 
       while (agenda.Count > 0) {
         (int y, int x) point = agenda.First();
-        
+
         int minX = point.x;
         int maxX = minX;
         int minY = point.y;
         int maxY = minY;
 
-        HashSet<(int y, int x)> completed = new ();
-        Queue<(int y, int x)> queue = new ();
+        HashSet<(int y, int x)> completed = new();
+        Queue<(int y, int x)> queue = new();
 
         queue.Enqueue(point);
 
@@ -542,7 +542,7 @@ namespace SimpleGames.GameOfLife {
           }
         }
 
-        yield return (minY, maxY + 1, minX, maxX + 1);
+        yield return (minY, maxY, minX, maxX);
       }
     }
 
@@ -567,7 +567,7 @@ namespace SimpleGames.GameOfLife {
     /// To String (for given range)
     /// </summary>
     public string ToString((int from, int to) rows, (int from, int to) columns, char live = 'O', char dead = '.') {
-      StringBuilder sb = new ();
+      StringBuilder sb = new();
 
       for (int r = rows.from; r < rows.to; ++r) {
         if (sb.Length > 0)
@@ -584,7 +584,7 @@ namespace SimpleGames.GameOfLife {
     /// To String (for given window)
     /// </summary>
     public string ToString((int fromRow, int toRow, int fromColumn, int toColumn) window, char live = 'O', char dead = '.') =>
-      ToString((window.fromRow, window.toRow), (window.fromColumn, window.toColumn), live, dead);
+      ToString((window.fromRow, window.toRow + 1), (window.fromColumn, window.toColumn + 1), live, dead);
 
     /// <summary>
     /// To String
@@ -607,8 +607,8 @@ namespace SimpleGames.GameOfLife {
     /// </summary>
     public string ToReport() =>
       string.Join(Environment.NewLine + Environment.NewLine, Windows()
-        .Select(window => $"{window.fromColumn}:{window.fromRow} / {window.toColumn - 1}:{window.toRow - 1}\r\n\r\n{ToString(window)}"));
-      
+        .Select(window => $"{window.fromColumn}:{window.fromRow} / {window.toColumn}:{window.toRow}\r\n\r\n{ToString(window)}"));
+
     #endregion Public
 
     #region IEquatable<GameOfLife>
